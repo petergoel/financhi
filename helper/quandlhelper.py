@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import quandl
 
+quandl.ApiConfig.api_key = 'myUW3XaM4eC7WEzTXzZA'
 
 # Get Pivot Data
 def get_pivot_data(symbol, startDate, endDate, columns):

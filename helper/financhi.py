@@ -2,18 +2,45 @@
 from . import datehelper
 from . import quandlhelper
 import numpy as np
+import datetime as dt
 
 
-# Global variables column[], pivotColumn, settleColumn - how to handle?
+# Prepare Data - Calls get_symbol_data to get inputs for final chart
+# TODO
+def prepare_data(inputDate, numDays, symbol,prev_weekday_index,noDigits,columns,pivotColumn,settleColumn):
+    symbolDataArray = []
+    startDate = datehelper.prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
 
-# Get Symbol Information
-def get_symbol_data(symbol, date, noDigits):
     # Get Date Range
-    three_day_pivot_range = 2
-    startDate, endDate = datehelper.get_date_ranges(date, three_day_pivot_range)
+    dateList = [startDate - dt.timedelta(days=x) for x in range(0, int(numDays))]
+    holidays = datehelper.get_holidays(dateList[-1], dateList[0])
+
+    for date in dateList:
+        weekno = date.weekday()
+        if weekno < 5:
+            print("Getting Data for {}".format(date))
+            if dt.datetime.combine(date, dt.datetime.min.time()) in holidays:
+                print("Holiday {}".format(date))
+            else:
+                symbolData = get_symbol_data(symbol, date, noDigits,columns,pivotColumn,settleColumn)
+                symbolDataArray.append(symbolData)
+
+    return symbolDataArray
+
+# TODO Global variables column[], pivotColumn, settleColumn - how to handle?
+
+# Get Symbol Information for plotting in charts
+# TODO Streamline logic for columns, pivot and settle
+#columns = ['High', 'Low', 'Close'],settleColumn = 'Close',pivotColumn = 'Close' - Equities
+#columns = ['High', 'Low', 'Last', 'Settle'],settleColumn = 'Settle',pivotColumn = 'Last' - Futures
+
+def get_symbol_data(symbol, date, noDigits,columns,pivotColumn,settleColumn,pivot_range=2):
+    # Get Date Range
+    startDate, endDate = datehelper.get_date_ranges(date, pivot_range)
 
     # Get pivot data
     threeDayPivotData = quandlhelper.get_pivot_data(symbol, startDate, endDate, columns)
+    # TODO Returns [] for future dates, add validation
     todayPivotData = quandlhelper.get_pivot_data(symbol, endDate, endDate, columns)
 
     if (todayPivotData.empty):
@@ -27,3 +54,30 @@ def get_symbol_data(symbol, date, noDigits):
         supportResistance = quandlhelper.get_support_resistances(todayPivotData, dailyPivots[0], noDigits)
         return np.array(
             [endDate, symbol, todayPivotData[pivotColumn][0], *threeDayPivots, *dailyPivots, *supportResistance])
+
+# Get Price Data - Returns Date vs. Price for Charting input
+# TODO - Externalize pivot column similar to get_symbol_data
+def get_price_data(symbol, inputDate, numDays,prev_weekday_index,columns,pivotColumn):
+    inputDate = datehelper.prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
+    # Get Date Range
+    dateList = [inputDate - dt.timedelta(days=x) for x in range(0, int(numDays))]
+    holidays = datehelper.get_holidays(dateList[-1], dateList[0])
+
+    priceDataArray = []
+    timeDataArray = []
+
+    for date in dateList:
+        weekno = date.weekday()
+        if weekno < 5:
+            print("Getting Data for {}".format(date))
+            if dt.datetime.combine(date, dt.datetime.min.time()) in holidays:
+                print("Holiday {}".format(date))
+            else:
+                priceData = quandlhelper.get_pivot_data(symbol, date, date, columns)
+                if (priceData.empty):
+                    print("Empty Data. Skipping for {}".format(inputDate))
+                else:
+                    timeDataArray.append(date)
+                    priceDataArray.append(priceData[pivotColumn].item())
+    return (timeDataArray, priceDataArray)
+
