@@ -57,4 +57,26 @@ def plot_chart(xaxis, yaxis, p1, p11, p12, p2, p21, p22, s1, r1, s2, r2, s3, r3,
     pyplot.legend()
     # pyplot.show()
     pyplot.savefig(fileName, bbox_inches='tight')
+    pyplot.clf()
+    return
+
+
+# Plot Chart
+def plot_chart_pivots(xaxis, yaxis, p1, p2, p3, fileName):
+    ax = pyplot.gca()
+    xaxis = dates.date2num(xaxis)  # Convert to maplotlib format
+    hfmt = dates.DateFormatter('%Y\n%m\n%d')
+    ax.xaxis.set_major_formatter(hfmt)
+    pyplot.xlabel('date')
+    pyplot.ylabel('price')
+    pyplot.plot(xaxis, yaxis, 'ro', color='blue', linewidth=2, linestyle='dashed', label='price')
+
+    pyplot.plot(xaxis, p1, 'ro', color='red', linewidth=1, linestyle='dashed', label="3-day-pivot")
+    pyplot.plot(xaxis, p2, 'bs', color='olive', linewidth=1, linestyle='dashed', label="3-day-pivot-R1")
+    pyplot.plot(xaxis, p3, 'g^', color='olive', linewidth=1, linestyle='dashed', label="3-day-pivot-R2")
+
+    pyplot.rcParams['figure.figsize'] = 20, 20
+    pyplot.legend()
+    pyplot.savefig(fileName, bbox_inches='tight')
+    pyplot.clf()
     return

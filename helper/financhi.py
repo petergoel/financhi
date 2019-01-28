@@ -81,3 +81,34 @@ def get_price_data(symbol, inputDate, numDays,prev_weekday_index,columns,pivotCo
                     priceDataArray.append(priceData[pivotColumn].item())
     return (timeDataArray, priceDataArray)
 
+
+# Prepare Data Plot with 3 day pivots
+def prepare_data_plot(inputDate, numDays, symbol,outputDir,fileName):
+    startDate = prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prevweekdayIndex)
+    dateArray=[]
+    priceArray=[]
+    threeDayPivotArray=[]
+    threeDayPivotArrayR1=[]
+    threeDayPivotArrayR2=[]
+    # Get Date Range
+    dateList = [startDate - dt.timedelta(days=x) for x in range(0, int(numDays))]
+    holidays = get_holidays(dateList[-1], dateList[0])
+
+    for date in dateList:
+        weekno = date.weekday()
+        if weekno < 5:
+            print("Getting Data for {}".format(date))
+            if dt.datetime.combine(date, dt.datetime.min.time()) in holidays:
+                print("Holiday {}".format(date))
+            else:
+                symbolData = get_symbol_data(symbol, date, numDigits)
+                symbolDataArray.append(symbolData)
+                dateArray.append(symbolData[0])
+                priceArray.append(symbolData[2])
+                threeDayPivotArray.append(symbolData[3])
+                threeDayPivotArrayR1.append(symbolData[4])
+                threeDayPivotArrayR2.append(symbolData[5])
+    plot_file = outputDir + ntpath.basename(symbol) + "_3day"+dt.datetime.fromtimestamp(time.time()).strftime(
+            '%Y-%m-%d-%H-%M-%S') + '.png'
+    plot_chart_pivots(dateArray,priceArray,threeDayPivotArray,threeDayPivotArrayR1,threeDayPivotArrayR2,plot_file)
+    return

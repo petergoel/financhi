@@ -78,3 +78,12 @@ def generate_ml_data(symbol, inputDate, numDays,prev_weekday_index,noDigits,colu
     symbolPivotDataDF = symbolPivotDataDF.iloc[:, 0:9]
     print("----------------------------")
     return symbolPivotDataDF
+
+
+#Generate chart with 3D pivots for entire timeframe
+def generate_charts_pivots(symbol, inputDate, chartDays, outputDir, fileName):
+    print("-------generate_charts_pivots--------")
+    print("Symbol -> {}".format(symbol))
+    prepare_data_plot(inputDate, chartDays, symbol,outputDir,fileName)
+    print("----------------------------")
+    return
