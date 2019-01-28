@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from matplotlib import pyplot, dates
 
-
+# TODO - Optimize function
 # Plot Chart
 def plot_chart(xaxis, yaxis, p1, p11, p12, p2, p21, p22, s1, r1, s2, r2, s3, r3, fileName):
     # matplotlib.use('agg') - for lambda
