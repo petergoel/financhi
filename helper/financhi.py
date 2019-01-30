@@ -15,7 +15,8 @@ import time
 # columns = ['High', 'Low', 'Close'],settleColumn = 'Close',pivotColumn = 'Close' - Equities
 # columns = ['High', 'Low', 'Last', 'Settle'],settleColumn = 'Settle',pivotColumn = 'Last' - Futures
 
-def get_symbol_data(symbol, date, pivotColumn='Close', settleColumn='Close',columns= ['High', 'Low', 'Close'], noDigits=2,pivot_range=2):
+def get_symbol_data(symbol, date, pivotColumn='Close', settleColumn='Close', columns=['High', 'Low', 'Close'],
+                    noDigits=2, pivot_range=2):
     # Get Date Ranges
     start_date, end_date = datehelper.get_date_ranges(date, pivot_range)
 
@@ -31,15 +32,15 @@ def get_symbol_data(symbol, date, pivotColumn='Close', settleColumn='Close',colu
     else:
         # Three Day Pivots and Daily Pivots
         threeDayPivots = quandlhelper.get_three_day_pivots(threeDayPivotData, todayPivotData[pivotColumn][0], noDigits)
-        dailyPivots = quandlhelper.get_pivots(todayPivotData, settleColumn,noDigits)
+        dailyPivots = quandlhelper.get_pivots(todayPivotData, settleColumn, noDigits)
         supportResistance = quandlhelper.get_support_resistances(todayPivotData, dailyPivots[0], noDigits)
         return np.array(
             [end_date, symbol, todayPivotData[pivotColumn][0], *threeDayPivots, *dailyPivots, *supportResistance])
 
 
 # Get Price Data - Returns Date vs. Price for Charting input
-# TODO - Externalize pivot column similar to get_symbol_data
-def get_price_data(symbol, inputDate, numDays, prev_weekday_index, columns, pivotColumn):
+def get_price_data(symbol, inputDate, numDays, columns=['High', 'Low', 'Close'], pivotColumn='Close',
+                   prev_weekday_index=0):
     inputDate = datehelper.get_prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
     # Get Date Range
     dateList = [inputDate - dt.timedelta(days=x) for x in range(0, int(numDays))]
@@ -114,7 +115,7 @@ def prepare_data_plot(inputDate, numDays, symbol, outputDir, fileName):
             if dt.datetime.combine(date, dt.datetime.min.time()) in holidays:
                 print("Holiday {}".format(date))
             else:
-                symbolData = get_symbol_data(symbol, date, noDigits, pivotColumn, settleColumn,columns)
+                symbolData = get_symbol_data(symbol, date, noDigits, pivotColumn, settleColumn, columns)
                 symbolDataArray.append(symbolData)
                 dateArray.append(symbolData[0])
                 priceArray.append(symbolData[2])

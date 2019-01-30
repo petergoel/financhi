@@ -28,6 +28,26 @@ class BasicTestSuite(unittest.TestCase):
         logger.debug('symbol data obtained for %s  is %s', futures_symbol, symbol_data)
         self.assertEqual(len(symbol_data), 15)
 
+    def test_get_price_data(self):
+        symbol = 'EOD/SPY'
+        input_date = '2019-01-24'
+        num_days=10
+
+        # Futures parameters
+        columns = ['High', 'Low', 'Last', 'Settle']
+        pivot_column = 'Last'
+
+        time_array,price_array = helper.get_price_data(symbol, input_date,num_days)
+        logger.debug('[time_array,price_array] obtained is %s, %s', time_array, price_array)
+        self.assertEqual(len(time_array), 7)
+        self.assertEqual(len(price_array), 7)
+
+        futures_symbol = 'CHRIS/CME_ES1'
+        time_array, price_array = helper.get_price_data(futures_symbol, input_date, num_days,columns,pivot_column)
+        logger.debug('[time_array,price_array] obtained is %s, %s', time_array, price_array)
+        self.assertEqual(len(time_array), 7)
+        self.assertEqual(len(price_array), 7)
+
 
 if __name__ == '__main__':
     unittest.main()
