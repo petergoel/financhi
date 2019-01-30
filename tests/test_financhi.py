@@ -31,22 +31,41 @@ class BasicTestSuite(unittest.TestCase):
     def test_get_price_data(self):
         symbol = 'EOD/SPY'
         input_date = '2019-01-24'
-        num_days=10
+        num_days = 10
 
         # Futures parameters
         columns = ['High', 'Low', 'Last', 'Settle']
         pivot_column = 'Last'
 
-        time_array,price_array = helper.get_price_data(symbol, input_date,num_days)
+        time_array, price_array = helper.get_price_data(symbol, input_date, num_days)
         logger.debug('[time_array,price_array] obtained is %s, %s', time_array, price_array)
         self.assertEqual(len(time_array), 7)
         self.assertEqual(len(price_array), 7)
 
         futures_symbol = 'CHRIS/CME_ES1'
-        time_array, price_array = helper.get_price_data(futures_symbol, input_date, num_days,columns,pivot_column)
+        time_array, price_array = helper.get_price_data(futures_symbol, input_date, num_days, columns, pivot_column)
         logger.debug('[time_array,price_array] obtained is %s, %s', time_array, price_array)
         self.assertEqual(len(time_array), 7)
         self.assertEqual(len(price_array), 7)
+
+    def test_prepare_data(self):
+        symbol = 'EOD/SPY'
+        input_date = '2019-01-24'
+        num_days = 10
+        # Futures parameters
+        columns = ['High', 'Low', 'Last', 'Settle']
+        pivot_column = 'Last'
+        settle_column = 'Settle'
+
+        symbol_data_array = helper.prepare_data(input_date, num_days, symbol)
+        logger.debug('symbol data array obtained  for %s is %s', symbol, symbol_data_array)
+        self.assertEqual(len(symbol_data_array), 7)
+
+        futures_symbol = 'CHRIS/CME_ES1'
+        symbol_data_array = helper.prepare_data(input_date, num_days, futures_symbol, pivot_column, settle_column,
+                                                columns)
+        logger.debug('symbol data array obtained for %s  is %s', futures_symbol, symbol_data_array)
+        self.assertEqual(len(symbol_data_array), 7)
 
 
 if __name__ == '__main__':

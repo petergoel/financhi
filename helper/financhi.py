@@ -67,7 +67,9 @@ def get_price_data(symbol, inputDate, numDays, columns=['High', 'Low', 'Close'],
 
 # Prepare Data - Calls get_symbol_data to get inputs for final chart
 # TODO Cleanup code invocation of get_symbol_data
-def prepare_data(inputDate, numDays, symbol, prev_weekday_index, noDigits, columns, pivotColumn, settleColumn):
+def prepare_data(inputDate, numDays, symbol, pivotColumn='Close', settleColumn='Close',
+                 columns=['High', 'Low', 'Close'], prev_weekday_index=0,
+                 noDigits=2, pivot_range=2):
     symbolDataArray = []
     startDate = datehelper.get_prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
 
@@ -82,7 +84,7 @@ def prepare_data(inputDate, numDays, symbol, prev_weekday_index, noDigits, colum
             if dt.datetime.combine(date, dt.datetime.min.time()) in holidays:
                 print("Holiday {}".format(date))
             else:
-                symbolData = get_symbol_data(symbol, date, noDigits, columns, pivotColumn, settleColumn)
+                symbolData = get_symbol_data(symbol, date, pivotColumn, settleColumn, columns, noDigits, pivot_range)
                 symbolDataArray.append(symbolData)
 
     return symbolDataArray
