@@ -18,7 +18,10 @@ class BasicTestSuite(unittest.TestCase):
         logger.debug('pivot data obtained is %s', pivot_data)
         self.assertEqual(pivot_data.empty,False)
 
-
+        stock_symbol = 'EOD/SPY'
+        pivot_data = helper.get_pivot_data(stock_symbol, start_date, end_date)
+        logger.debug('pivot data obtained is %s', pivot_data)
+        self.assertEqual(pivot_data.empty, False)
 
     def test_get_pivots(self):
         symbol = 'CHRIS/CME_ES1'
@@ -31,6 +34,12 @@ class BasicTestSuite(unittest.TestCase):
         pivots=helper.get_pivots(pivot_data,settle_column)
         logger.debug('pivots obtained is %s', pivots)
         self.assertEqual(len(pivots),3)
+
+        stock_symbol='EOD/SPY'
+        pivot_data = helper.get_pivot_data(stock_symbol, end_date, end_date)
+        pivots = helper.get_pivots(pivot_data)
+        logger.debug('pivots obtained is %s', pivots)
+        self.assertEqual(len(pivots), 3)
 
     def test_get_three_day_pivots(self):
         symbol = 'CHRIS/CME_ES1'

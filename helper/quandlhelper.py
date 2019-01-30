@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 import quandl
+import logging
+
+log = logging.getLogger(__name__)
 
 quandl.ApiConfig.api_key = 'myUW3XaM4eC7WEzTXzZA'
 
 # Get Pivot Data
 def get_pivot_data(symbol, startDate, endDate, columns= ['High', 'Low', 'Close']):
+    log.debug('[input parameters] %s %s %s', symbol,startDate,endDate)
     rawData = quandl.get(symbol, start_date=startDate, end_date=endDate)
     pivotData = rawData[columns]
+    log.debug('pivot data obtained is',pivotData)
     return pivotData
 
 
@@ -26,7 +31,7 @@ def get_three_day_pivots(pivotData, settle, noDigits=2):
 
 
 # Get Pivots
-def get_pivots(pivotData, settleColumn,noDigits=2):
+def get_pivots(pivotData, settleColumn='Close',noDigits=2):
     if(pivotData.empty):
         return []
     v1 = pivotData['High'][0]
