@@ -4,7 +4,7 @@ import logging
 import unittest
 import datetime as dt
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 # noinspection SyntaxError,PyUnusedLocal
