@@ -10,8 +10,8 @@ class BasicTestSuite(unittest.TestCase):
 
     def test_get_pivot_data(self):
         symbol = 'CHRIS/CME_ES1'
-        start_date = '2019-01-25'
-        end_date = '2019-01-26'
+        start_date = '2019-01-01'
+        end_date = '2019-01-29'
         columns = ['High', 'Low', 'Last', 'Settle']
 
         pivot_data = helper.get_pivot_data(symbol, start_date, end_date,columns)
