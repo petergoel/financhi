@@ -9,7 +9,7 @@ import datetime as dt
 # TODO
 def prepare_data(inputDate, numDays, symbol,prev_weekday_index,noDigits,columns,pivotColumn,settleColumn):
     symbolDataArray = []
-    startDate = datehelper.prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
+    startDate = datehelper.get_prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
 
     # Get Date Range
     dateList = [startDate - dt.timedelta(days=x) for x in range(0, int(numDays))]
@@ -58,7 +58,7 @@ def get_symbol_data(symbol, date, noDigits,columns,pivotColumn,settleColumn,pivo
 # Get Price Data - Returns Date vs. Price for Charting input
 # TODO - Externalize pivot column similar to get_symbol_data
 def get_price_data(symbol, inputDate, numDays,prev_weekday_index,columns,pivotColumn):
-    inputDate = datehelper.prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
+    inputDate = datehelper.get_prev_weekday(dt.datetime.strptime(inputDate, '%Y-%m-%d').date(), prev_weekday_index)
     # Get Date Range
     dateList = [inputDate - dt.timedelta(days=x) for x in range(0, int(numDays))]
     holidays = datehelper.get_holidays(dateList[-1], dateList[0])

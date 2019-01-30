@@ -2,6 +2,7 @@
 import logging
 import os
 from .datehelper import *
+from .quandlhelper import *
 from logging.config import fileConfig
 
 fileConfig('logging_config.ini')

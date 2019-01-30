@@ -27,7 +27,7 @@ def get_holidays(startDate, endDate):
 
 
 # Get Previous Workday
-def prev_weekday(adate, index):
+def get_prev_weekday(adate, index=0):
     adate -= timedelta(days=index)
     log.debug("input date", adate)
     while adate.weekday() > 4:  # Mon-Fri are 0-4
@@ -37,12 +37,12 @@ def prev_weekday(adate, index):
 
 
 # Get Date Ranges between two dates
-def get_date_ranges(date, pivotRange):
-    endDate = prev_weekday(date, prev_week_day_index)
+def get_date_ranges(date, pivotRange=2):
+    endDate = get_prev_weekday(date)
     startDate = endDate - BDay(pivotRange)
     startDate = startDate.date()
     holidays = get_holidays(startDate, endDate)
 
     while dt.datetime.combine(startDate, dt.datetime.min.time()) in holidays:
-        startDate = prev_weekday(startDate, 1)
+        startDate = get_prev_weekday(startDate, 1)
     return (startDate, endDate)

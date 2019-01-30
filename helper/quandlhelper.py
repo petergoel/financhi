@@ -4,14 +4,16 @@ import quandl
 quandl.ApiConfig.api_key = 'myUW3XaM4eC7WEzTXzZA'
 
 # Get Pivot Data
-def get_pivot_data(symbol, startDate, endDate, columns):
+def get_pivot_data(symbol, startDate, endDate, columns= ['High', 'Low', 'Close']):
     rawData = quandl.get(symbol, start_date=startDate, end_date=endDate)
     pivotData = rawData[columns]
     return pivotData
 
 
 # Get Three Day Pivots
-def get_three_day_pivots(pivotData, settle, noDigits):
+def get_three_day_pivots(pivotData, settle, noDigits=2):
+    if (pivotData.empty):
+        return []
     v1 = pivotData['High'].max()
     v2 = pivotData['Low'].min()
     v3 = settle
@@ -24,7 +26,9 @@ def get_three_day_pivots(pivotData, settle, noDigits):
 
 
 # Get Pivots
-def get_pivots(pivotData, noDigits, settleColumn):
+def get_pivots(pivotData, settleColumn,noDigits=2):
+    if(pivotData.empty):
+        return []
     v1 = pivotData['High'][0]
     v2 = pivotData['Low'][0]
     v3 = pivotData[settleColumn][0]
@@ -37,7 +41,7 @@ def get_pivots(pivotData, noDigits, settleColumn):
 
 
 # Get Support Resistances
-def get_support_resistances(pivotData, todayPivot, noDigits):
+def get_support_resistances(pivotData, todayPivot, noDigits=2):
     # Daily Pivot Calculations
     todayMax = pivotData['High'].item()
     todayMin = pivotData['Low'].item()
