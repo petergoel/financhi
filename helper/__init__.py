@@ -12,7 +12,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-#fileConfig('logging_config.ini')
+# fileConfig('logging_config.ini')
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logging_config.ini')
 logging.config.fileConfig(log_file_path)
 

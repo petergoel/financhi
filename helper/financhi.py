@@ -4,17 +4,10 @@ import logging
 import pandas as pd
 import datetime as dt
 import time
-import os
 import sys, getopt
 
 logger = logging.getLogger(__name__)
 pd.set_option('display.expand_frame_repr', False)
-
-
-def if_exists(path):
-    if not os.path.exists(path):
-        os.mkdir(path)
-
 
 # Main function
 def main(argv):
@@ -31,7 +24,7 @@ def main(argv):
     pivot_column = 'Last'
     columns = ['High', 'Low', 'Last', 'Settle']
     futures_columns = ['Date', 'High', 'Low', 'Last', 'Settle']
-    if_exists(output_dir)
+    helper.if_exists(output_dir)
 
     try:
         opts, args = getopt.getopt(argv, "hs:d:n:t:", ["symbol=", "date=", "days=", "type="])
