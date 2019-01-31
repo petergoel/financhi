@@ -6,6 +6,7 @@ from .quandlhelper import *
 from .plothelper import *
 from .financhihelper import *
 from .charthelper import *
+from .outputhelper import *
 from logging.config import fileConfig
 
 fileConfig('logging_config.ini')

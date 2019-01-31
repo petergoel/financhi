@@ -1,9 +1,21 @@
 import logging
 import shutil
 from . import charthelper
+import ntpath
 
 logger = logging.getLogger(__name__)
 
+extension_csv = '.csv'
+extension_json = '.json'
+extension_png = '.png'
+
+def generate_file_names(output_dir,symbol,file_name):
+    csv_file_name = output_dir + ntpath.basename(symbol) + '_' + file_name + extension_csv
+    png_file_name = output_dir + ntpath.basename(symbol) + '_' + file_name + extension_png
+    json_file_name = output_dir + ntpath.basename(symbol) + '_' + file_name + extension_json
+
+    file_names = [csv_file_name, png_file_name, json_file_name]
+    return [*file_names]
 
 def save_output(pivot_df, csv_file_name, png_file_name, json_file_name):
     # write to csv and json files and create charts
