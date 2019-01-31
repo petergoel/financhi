@@ -16,7 +16,7 @@ class BasicTestSuite(unittest.TestCase):
         expected_date = dt.datetime.strptime('2019-01-25', '%Y-%m-%d').date()
         prev_date = helper.get_prev_weekday(test_date)
 
-        logger.debug('prev_date is %s & expected date is %s', prev_date, expected_date)
+        logger.debug('test_prev_weekday:: prev_date is %s & expected date is %s', prev_date, expected_date)
 
         self.assertEqual(prev_date, expected_date)
 
@@ -28,7 +28,7 @@ class BasicTestSuite(unittest.TestCase):
         end_date = dt.datetime.strptime(end_date, '%Y-%m-%d').date()
         holiday_list = helper.get_holidays(start_date, end_date)
 
-        logger.debug("Holidays in 2018 is %s", holiday_list)
+        logger.debug("test_get_holidays:: Number of Holidays in 2018 is : %s", len(holiday_list))
         self.assertIsNotNone(holiday_list)
 
     def test_get_date_ranges(self):
@@ -37,7 +37,7 @@ class BasicTestSuite(unittest.TestCase):
         input_date = dt.datetime.strptime(input_date, '%Y-%m-%d').date()
         start_date, end_date = helper.get_date_ranges(input_date)
 
-        logger.debug("start date and end date for  %s are: %s %s", input_date, start_date, end_date)
+        logger.debug("test_get_date_ranges:: start date and end date for  %s are: %s %s", input_date, start_date, end_date)
         self.assertEqual(end_date, input_date)
         self.assertEqual(start_date, dt.datetime.strptime(test_date, '%Y-%m-%d').date())
 

@@ -9,40 +9,56 @@ import logging
 log = logging.getLogger(__name__)
 
 bush_holiday = '2018-12-05'  # George W. Bush Market Holiday
-prev_week_day_index = 0
 
 
 # get holidays
-def get_holidays(startDate, endDate):
+def get_holidays(start_date, end_date):
     # Implement from here https://stackoverflow.com/questions/33094297/create-trading-holiday-calendar-with-pandas/36525605#36525605
     cal = get_calendar('USFederalHolidayCalendar')  # Create calendar instance
-    tradingCal = HolidayCalendarFactory('TradingCalendar', cal, GoodFriday)
+    trading_cal = HolidayCalendarFactory('TradingCalendar', cal, GoodFriday)
     # new instance of class
-    newcal = tradingCal()
+    newcal = trading_cal()
     newcal.rules.pop(7)  # Remove Columbus Day rule
     newcal.rules.pop(7)  # Remove Veteran's Day rule
-    holidays = newcal.holidays(start=startDate, end=endDate).to_pydatetime()
-    holidays = np.append(holidays, dt.datetime.strptime(bush_holiday, '%Y-%m-%d'))
+    holidays = newcal.holidays(start=start_date, end=end_date).to_pydatetime()
+    #    holidays = np.append(holidays, dt.datetime.strptime(bush_holiday, '%Y-%m-%d'))
     return holidays
 
 
 # Get Previous Workday
-def get_prev_weekday(adate, index=0):
-    adate -= timedelta(days=index)
-    log.debug("input date", adate)
-    while adate.weekday() > 4:  # Mon-Fri are 0-4
-        adate -= timedelta(days=1)
-    log.debug("output date", adate)
-    return adate
+def get_prev_weekday(input_date, index=0):
+    input_date -= timedelta(days=index)
+    log.debug("get_prev_weekday:: input date", input_date)
+    while input_date.weekday() > 4:  # Mon-Fri are 0-4
+        input_date -= timedelta(days=1)
+    log.debug("get_prev_weekday:: output date", input_date)
+    return input_date
 
 
 # Get Date Ranges between two dates
 def get_date_ranges(date, pivotRange=2):
-    endDate = get_prev_weekday(date)
-    startDate = endDate - BDay(pivotRange)
-    startDate = startDate.date()
-    holidays = get_holidays(startDate, endDate)
+    end_date = get_prev_weekday(date)
+    start_date = end_date - BDay(pivotRange)
+    start_date = start_date.date()
+    holidays = get_holidays(start_date, end_date)
 
-    while dt.datetime.combine(startDate, dt.datetime.min.time()) in holidays:
-        startDate = get_prev_weekday(startDate, 1)
-    return (startDate, endDate)
+    while dt.datetime.combine(start_date, dt.datetime.min.time()) in holidays:
+        startDate = get_prev_weekday(start_date, 1)
+    log.debug("get_date_ranges:: start date", start_date)
+    log.debug("get_date_ranges:: end date", end_date)
+    return (start_date, end_date)
+
+
+# TODO - Fix logic for Bush Holiday and test holidays in general
+# Get Date Ranges between two dates
+def get_start_date(date, pivot_range):
+    date = dt.datetime.strptime(date, '%Y-%m-%d').date()
+    end_date = get_prev_weekday(date)
+    start_date = end_date - BDay(pivot_range + 1)
+    start_date = start_date.date()
+
+    no_holidays = len(get_holidays(start_date, end_date))
+    start_date = get_prev_weekday(start_date, no_holidays)
+    log.debug("get_date_ranges:: start date", start_date)
+    log.debug("get_date_ranges:: end date", end_date)
+    return (start_date, end_date)
