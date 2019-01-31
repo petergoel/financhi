@@ -29,10 +29,10 @@ def calculate_pivot_data(df, settle_column='Close',pivot_column='Close'):
             [input_row['Date'].item(), input_row['Symbol'].item(), input_row[pivot_column].item(), *daily_pivots,
              *support_resistance])
     pivot_df = pd.DataFrame(pivot_data_list,
-                            columns=['Date', 'Symbol', 'Price', 'DPivot', 'DPivotR1', 'DPivotR2', 'S1', 'S2', 'S3',
-                                     'R1',
-                                     'R2',
-                                     'R3'])
+                            columns=['Date', 'Symbol', 'Price', 'DPivot', 'DPivotR1', 'DPivotR2', 'R1', 'R2', 'R3',
+                                     'S1',
+                                     'S2',
+                                     'S3'])
     # logger.debug('calculate_pivot_data:: pivot_df is %s', pivot_df)
     logger.debug("-------------------------")
     return pivot_df
