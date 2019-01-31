@@ -4,7 +4,7 @@ import os
 from .datehelper import *
 from .quandlhelper import *
 from .plothelper import *
-from .financhi import *
+from .financhihelper import *
 from .charthelper import *
 from logging.config import fileConfig
 
