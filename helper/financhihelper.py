@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import helper
 import logging
 import pandas as pd
 import ntpath
