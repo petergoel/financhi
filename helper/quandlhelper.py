@@ -11,7 +11,7 @@ def get_pivot_data(symbol, start_date, end_date, columns= ['High', 'Low', 'Close
     log.debug('get_pivot_data:: [input parameters] %s %s %s', symbol,start_date,end_date)
     raw_data = quandl.get(symbol, start_date=start_date, end_date=end_date)
     pivot_data = raw_data[columns]
-    log.debug('get_pivot_data:: pivot data obtained is',pivot_data)
+    log.debug('get_pivot_data:: pivot data obtained is %s',pivot_data)
     return pivot_data
 
 
@@ -21,7 +21,7 @@ def calculate_pivots(v1,v2,v3,no_digits=2):
     pivot_r1 = round((v1 + v2) / 2, no_digits)
     pivot_r2 = round(((pivot - pivot_r1) + pivot), no_digits)
     pivots = [pivot, pivot_r1, pivot_r2]
-    log.debug('calculate_pivots:: pivots  obtained are', pivots)
+    log.debug('calculate_pivots:: pivots  obtained are %s', pivots)
     return pivots
 
 
@@ -64,7 +64,7 @@ def get_support_resistances(pivot_data, today_pivot, no_digits=2):
     today_s3 = round(today_min - 2 * (today_max - today_pivot), no_digits)
     today_r = [today_r1, today_r2, today_r3]
     today_s = [today_s1, today_s2, today_s3]
-    log.debug('calculate_pivots:: Resistances  obtained are', today_r)
-    log.debug('calculate_pivots:: Supports  obtained are', today_s)
+    log.debug('calculate_pivots:: Resistances  obtained are %s', today_r)
+    log.debug('calculate_pivots:: Supports  obtained are %s', today_s)
 
     return [*today_r, *today_s]

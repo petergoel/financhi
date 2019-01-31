@@ -34,5 +34,4 @@ def print_output(df):
     columns = shutil.get_terminal_size().columns
     for i in range(len(df)):
         logger.debug(df_split[i].center(columns))
-        print(df_split[i].center(columns))
     return
