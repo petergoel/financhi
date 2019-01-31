@@ -5,6 +5,7 @@ from .datehelper import *
 from .quandlhelper import *
 from .plothelper import *
 from .financhi import *
+from .charthelper import *
 from logging.config import fileConfig
 
 fileConfig('logging_config.ini')
