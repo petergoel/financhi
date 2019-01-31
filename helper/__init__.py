@@ -17,7 +17,4 @@ log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'loggin
 logging.config.fileConfig(log_file_path)
 
 
-# Check if path exists
-def if_exists(path):
-    if not os.path.exists(path):
-        os.mkdir(path)
+

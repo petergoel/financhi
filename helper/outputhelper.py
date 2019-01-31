@@ -2,17 +2,32 @@ import logging
 import shutil
 from . import charthelper
 import ntpath
+import os
 
 logger = logging.getLogger(__name__)
+
+# Check if path exists
+def if_exists(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
 
 extension_csv = '.csv'
 extension_json = '.json'
 extension_png = '.png'
+csv_dir = 'csv/'
+json_dir = 'json/'
+png_dir = 'png/'
+
+
 
 def generate_file_names(output_dir,symbol,file_name):
-    csv_file_name = output_dir + ntpath.basename(symbol) + '_' + file_name + extension_csv
-    png_file_name = output_dir + ntpath.basename(symbol) + '_' + file_name + extension_png
-    json_file_name = output_dir + ntpath.basename(symbol) + '_' + file_name + extension_json
+    if_exists(output_dir + csv_dir)
+    if_exists(output_dir + json_dir)
+    if_exists(output_dir + png_dir)
+
+    csv_file_name = output_dir + csv_dir+ ntpath.basename(symbol) + '_' + file_name + extension_csv
+    png_file_name = output_dir + png_dir+ ntpath.basename(symbol) + '_' + file_name + extension_png
+    json_file_name = output_dir + json_dir + ntpath.basename(symbol) + '_' + file_name + extension_json
 
     file_names = [csv_file_name, png_file_name, json_file_name]
     return [*file_names]

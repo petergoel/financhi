@@ -26,6 +26,9 @@ def main(argv):
     futures_columns = ['Date', 'High', 'Low', 'Last', 'Settle']
     helper.if_exists(output_dir)
 
+
+
+
     try:
         opts, args = getopt.getopt(argv, "hs:d:n:t:", ["symbol=", "date=", "days=", "type="])
     except getopt.GetoptError:
