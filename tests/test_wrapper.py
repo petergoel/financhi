@@ -11,7 +11,6 @@ import os
 logger = logging.getLogger(__name__)
 pd.set_option('display.expand_frame_repr', False)
 
-
 output_dir = '../output/' + dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d') + '/'
 extension_csv = '.csv'
 extension_json = '.json'
@@ -32,7 +31,7 @@ class BasicTestSuite(unittest.TestCase):
         input_date = '2019-01-30'
         num_days = 10
 
-        #Column variables
+        # Column variables
         settle_column = 'Settle'
         pivot_column = 'Last'
         columns = ['High', 'Low', 'Last', 'Settle']
@@ -48,6 +47,23 @@ class BasicTestSuite(unittest.TestCase):
         logger.debug('test_get_pivot_data:: [symbol, start date, end date, columns] [ %s, %s, %s, %s ]', symbol,
                      start_date, end_date, columns)
 
+        pivot_df = self.get_financhi(symbol, start_date, end_date, columns, futures_columns, settle_column,
+                                     pivot_column)
+        self.save_output(pivot_df,csv_file_name,png_file_name,json_file_name)
+
+        self.assertEqual(pivot_df.empty, False)
+
+    def save_output(self,pivot_df,csv_file_name,png_file_name,json_file_name):
+        # write to csv and json files and create charts
+        pivot_df.to_csv(csv_file_name, sep=',', encoding='utf-8')
+        self.generate_charts(pivot_df, png_file_name)
+        with open(json_file_name, 'w') as f:
+            f.write(pivot_df.to_json(orient='records', lines=True))
+        return
+
+    # Main function
+    def get_financhi(self, symbol, start_date, end_date, columns=['High', 'Low', 'Close'],
+                     futures_columns=['Date', 'High', 'Low', 'Close'], settle_column='Close', pivot_column='Close'):
         # get quandl data for pivots
         pivot_data = helper.get_pivot_data(symbol, start_date, end_date, columns)
         symbol_df = pd.DataFrame(pivot_data).reset_index()
@@ -60,15 +76,7 @@ class BasicTestSuite(unittest.TestCase):
         pivot_df = self.get_pivot_data(symbol_df, settle_column)
         pivot_df = self.get_three_day_pivot_data(symbol_df, pivot_df, pivot_column)
         pivot_df = pivot_df.drop(['Pivot'], axis=1)
-
-        # write to csv and json files
-        pivot_df.to_csv(csv_file_name, sep=',', encoding='utf-8')
-        with open(json_file_name, 'w') as f:
-            f.write(pivot_df.to_json(orient='records', lines=True))
-
-        self.generate_charts(pivot_df, png_file_name)
-        self.assertEqual(pivot_data.empty, False)
-
+        return pivot_df
 
     # Generate pyplot charts
     def generate_charts(self, df, file):
