@@ -2,70 +2,51 @@
 import helper
 import logging
 import unittest
+import pandas as pd
 import datetime as dt
+import time
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+pd.set_option('display.expand_frame_repr', False)
+
+output_dir = '../output/' + dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d') + '/'
+
+file_name = dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H-%M-%S')
 
 
 class BasicTestSuite(unittest.TestCase):
+    def test_get_pivot_data(self):
 
-    def test_get_symbol_data(self):
-        symbol = 'EOD/SPY'
-        input_date = '2019-01-24'
-        input_date = dt.datetime.strptime(input_date, '%Y-%m-%d').date()
-        # Futures parameters
-        columns = ['High', 'Low', 'Last', 'Settle']
-        pivot_column = 'Last'
-        settle_column = 'Settle'
-        num_digits = 2
-
-        symbol_data = helper.get_symbol_data(symbol, input_date)
-        logger.debug('symbol data obtained  for %s is %s', symbol, symbol_data)
-        self.assertEqual(len(symbol_data), 15)
-
-        futures_symbol = 'CHRIS/CME_ES1'
-        symbol_data = helper.get_symbol_data(futures_symbol, input_date, pivot_column, settle_column, columns)
-        logger.debug('symbol data obtained for %s  is %s', futures_symbol, symbol_data)
-        self.assertEqual(len(symbol_data), 15)
-
-    def test_get_price_data(self):
-        symbol = 'EOD/SPY'
-        input_date = '2019-01-24'
+        # Input Variables
+        symbol = 'CHRIS/CME_ES1'
+        input_date = '2019-01-30'
         num_days = 10
 
-        # Futures parameters
-        columns = ['High', 'Low', 'Last', 'Settle']
-        pivot_column = 'Last'
-
-        time_array, price_array = helper.get_price_data(symbol, input_date, num_days)
-        logger.debug('[time_array,price_array] obtained is %s, %s', time_array, price_array)
-        self.assertEqual(len(time_array), 7)
-        self.assertEqual(len(price_array), 7)
-
-        futures_symbol = 'CHRIS/CME_ES1'
-        time_array, price_array = helper.get_price_data(futures_symbol, input_date, num_days, columns, pivot_column)
-        logger.debug('[time_array,price_array] obtained is %s, %s', time_array, price_array)
-        self.assertEqual(len(time_array), 7)
-        self.assertEqual(len(price_array), 7)
-
-    def test_prepare_data(self):
-        symbol = 'EOD/SPY'
-        input_date = '2019-01-24'
-        num_days = 10
-        # Futures parameters
-        columns = ['High', 'Low', 'Last', 'Settle']
-        pivot_column = 'Last'
+        # Column variables
         settle_column = 'Settle'
+        pivot_column = 'Last'
+        columns = ['High', 'Low', 'Last', 'Settle']
+        futures_columns = ['Date', 'High', 'Low', 'Last', 'Settle']
 
-        symbol_data_array = helper.prepare_data(input_date, num_days, symbol)
-        logger.debug('symbol data array obtained  for %s is %s', symbol, symbol_data_array)
-        self.assertEqual(len(symbol_data_array), 7)
+        helper.if_exists(output_dir)
 
-        futures_symbol = 'CHRIS/CME_ES1'
-        symbol_data_array = helper.prepare_data(input_date, num_days, futures_symbol, pivot_column, settle_column,
-                                                columns)
-        logger.debug('symbol data array obtained for %s  is %s', futures_symbol, symbol_data_array)
-        self.assertEqual(len(symbol_data_array), 7)
+        start_date, end_date = helper.get_start_date(input_date, num_days)
+        logger.debug('test_get_pivot_data:: [symbol, start date, end date, columns] [ %s, %s, %s, %s ]', symbol,
+                     start_date, end_date, columns)
+
+        pivot_df = helper.run_financhi(symbol, start_date, end_date, columns, futures_columns, settle_column,pivot_column)
+        (csv_file_name, png_file_name, json_file_name) = helper.generate_file_names(output_dir,symbol,file_name)
+        helper.save_output(pivot_df,csv_file_name, png_file_name, json_file_name)
+        helper.print_output(pivot_df)
+
+
+        stock_symbol="EOD/SPY"
+        pivot_df = helper.run_financhi(stock_symbol, start_date, end_date)
+        (csv_file_name, png_file_name, json_file_name) = helper.generate_file_names(output_dir,stock_symbol,file_name)
+        helper.save_output(pivot_df,csv_file_name, png_file_name, json_file_name)
+        helper.print_output(pivot_df)
+
+        self.assertEqual(pivot_df.empty, False)
 
 
 if __name__ == '__main__':
